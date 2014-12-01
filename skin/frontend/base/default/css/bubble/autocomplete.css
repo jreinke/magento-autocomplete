@@ -1,0 +1,64 @@
+span.twitter-typeahead {
+    float: left;
+}
+
+input.tt-hint {
+    color: #ccc;
+}
+
+.tt-dropdown-menu {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.tt-dataset-products .empty {
+    padding: 4px;
+    text-align: left;
+}
+
+.tt-dataset-products {
+    border: 1px solid #bfcdd3;
+    background: #fff;
+    border-radius: 2px;
+}
+
+.tt-dataset-products a {
+    padding: 6px;
+    display: block;
+    text-decoration: none;
+    border-bottom: 1px solid #d5e4eb;
+    text-align: left;
+}
+
+.tt-dataset-products .tt-suggestion:last-child a {
+    border-bottom: 0;
+}
+
+.tt-dataset-products a:hover,
+.tt-dataset-products a:hover .price-box .price,
+.tt-suggestion.tt-cursor a,
+.tt-suggestion.tt-cursor a .price-box .price-label,
+.tt-suggestion.tt-cursor a .price-box .price {
+    background-color: #ecf3f6;
+    text-decoration: none;
+}
+
+.tt-dataset-products a .image {
+    float: left;
+}
+
+.tt-dataset-products a .image img {
+    width: 50px;
+}
+
+.tt-dataset-products a .info {
+    margin-left: 56px;
+}
+
+.tt-dataset-products a .price-box {
+    margin: 0;
+}
+
+.tt-dataset-products a .clearer {
+    clear: both;
+}

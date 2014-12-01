@@ -1,0 +1,105 @@
+<?php
+/**
+ * Bubble Autocomplete Javascript.
+ *
+ * @category    Bubble
+ * @package     Bubble_Autocomplete
+ * @version     1.0.0
+ * @copyright   Copyright (c) 2014 BubbleShop (https://www.bubbleshop.net)
+ *
+ * @var $this   Mage_Core_Block_Abstract
+ * @var $helper Bubble_Autocomplete_Helper_Data
+ */
+$helper = $this->helper('bubble_autocomplete');
+?>
+<?php if ($helper->isEnabled()): ?>
+<script type="text/javascript">
+//<![CDATA[
+// Bypass default autocomplete
+Ajax.Autocompleter.prototype.getUpdatedChoices = function() {
+    return false;
+};
+
+jQuery('#search').removeClass('required-entry');
+
+// init some useful variables
+var priceFormat = <?php echo $this->helper('core')->jsonEncode($helper->getJsPriceFormat()) ?>;
+var baseUrl = '<?php echo $helper->getBaseUrl() ?>';
+var baseUrlMedia = '<?php echo $helper->getBaseUrlMedia() ?>';
+var imgPlaceholder = '<?php echo Mage::getModel('catalog/product')->getSmallImageUrl(100, 100); ?>';
+
+// constructs the suggestion engine
+var engine = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    <?php if ($helper->getUseLocalStorage()): ?>
+    prefetch: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' },
+    <?php else: ?>
+    remote: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' },
+    <?php endif; ?>
+    limit: <?php echo $helper->getLimit() ?>,
+    ttl: <?php echo $helper->getCacheLifetime() * 1000 ?> // milliseconds
+});
+
+// kicks off the loading/processing of `local` and `prefetch`
+engine.initialize();
+
+jQuery('#search').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: <?php echo $helper->getMinLength() ?>
+}, {
+    name: 'products',
+    displayKey: 'name',
+    // `ttAdapter` wraps the suggestion engine in an adapter that
+    // is compatible with the typeahead jQuery plugin
+    source: engine.ttAdapter(),
+    templates: {
+        empty: '<div class="empty">' +
+                   '<?php echo $this->__('No Result') ?>' +
+               '</div>',
+        suggestion: function(product) {
+            var img = imgPlaceholder;
+            if (product.image && product.image != 'no_selection') {
+                img = baseUrlMedia + product.image;
+            }
+            return '<a href="' + baseUrl + product.url_path + '">' +
+                        '<div class="image">' +
+                            '<img src="' + img + '">' +
+                        '</div>' +
+                        '<div class="info">' +
+                            '<span class="name">' + product.name + '</span>' +
+                            '<div class="price-box">' + formatSuggestionPrice(product, priceFormat) + '</div>' +
+                        '</div>' +
+                        '<div class="clearer"><!-- --></div>' +
+                    '</a>';
+        }
+    }
+});
+
+jQuery('#search').bind('typeahead:selected', function(obj, product, name) {
+    window.location.href = baseUrl + product.url_path;
+});
+
+function formatSuggestionPrice(product, priceFormat) {
+    var price = '';
+    switch (product.type_id) {
+        case 'grouped':
+        case 'configurable':
+        case 'bundle':
+            price = '<p class="minimal-price">' +
+                        '<span class="price-label"><?php echo $this->__('Starting at:') ?>&nbsp;</span>' +
+                        '<span class="price">' + formatCurrency(product.min_price, priceFormat, false) + '</span>' +
+                    '</p>';
+            break;
+        default:
+            price = '<span class="price">' +
+                        formatCurrency(product.price, priceFormat, false) +
+                    '</span>';
+    }
+
+    return price;
+}
+//]]>
+</script>
+<?php endif; ?>

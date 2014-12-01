@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Bubble_Autocomplete>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Bubble_Autocomplete>
+    </modules>
+</config>

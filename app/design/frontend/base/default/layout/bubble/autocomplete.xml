@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addItem" ifconfig="bubble_autocomplete/general/enable_jquery"><type>skin_js</type><script>js/lib/jquery-1.10.2.min.js</script></action>
+            <action method="addItem" ifconfig="bubble_autocomplete/general/enable_jquery"><type>skin_js</type><script>js/lib/noconflict.js</script></action>
+            <action method="addItem" ifconfig="bubble_autocomplete/general/enable"><type>skin_js</type><script>js/typeahead.bundle.js</script></action>
+            <action method="addItem" ifconfig="bubble_autocomplete/general/enable"><type>skin_css</type><name>css/bubble/autocomplete.css</name></action>
+        </reference>
+        <reference name="before_body_end">
+            <block type="core/template" name="bubble.autocomplete.js" template="bubble/autocomplete/js.phtml" />
+        </reference>
+    </default>
+</layout>
