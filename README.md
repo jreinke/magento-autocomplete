@@ -1,4 +1,4 @@
-# Very fast autocomplete feature for Magento
+## Very fast autocomplete feature for Magento
 
 ![Magento Autocomplete](http://i.imgur.com/pc1KD3A.gif)
 
