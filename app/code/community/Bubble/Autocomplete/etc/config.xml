@@ -21,6 +21,16 @@
                 <class>Bubble_Autocomplete_Model</class>
             </bubble_autocomplete>
         </models>
+        <events>
+            <bubble_autocomplete_product_collection_init>
+                <observers>
+                    <bubble_autocomplete>
+                        <class>bubble_autocomplete/observer</class>
+                        <method>onProductCollectionInit</method>
+                    </bubble_autocomplete>
+                </observers>
+            </bubble_autocomplete_product_collection_init>
+        </events>
     </global>
     <frontend>
         <routers>
