@@ -93,9 +93,21 @@ function formatSuggestionPrice(product, priceFormat) {
                     '</p>';
             break;
         default:
-            price = '<span class="price">' +
-                        formatCurrency(product.price, priceFormat, false) +
-                    '</span>';
+            if (parseFloat(product.final_price) < parseFloat(product.price)) {
+                price += '<p class="old-price">' +
+                             '<span class="price-label"><?php echo $this->__('Regular Price:') ?>&nbsp;</span>' +
+                             '<span class="price">' + formatCurrency(product.price, priceFormat, false) + '</span>' +
+                         '</p>' +
+                         '<p class="special-price">' +
+                             '<span class="price">' +
+                                 formatCurrency(product.price, priceFormat, false) +
+                             '</span>' +
+                         '</p>';
+            } else {
+                price += '<span class="price">' +
+                             formatCurrency(product.price, priceFormat, false) +
+                         '</span>';
+            }
     }
 
     return price;

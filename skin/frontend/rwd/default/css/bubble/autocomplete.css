@@ -60,6 +60,11 @@ input[type=search].tt-hint {
     text-decoration: none;
 }
 
+.tt-dataset-products a:hover .price-box .old-price .price,
+.tt-suggestion.tt-cursor a .price-box .old-price .price {
+    text-decoration: line-through;
+}
+
 .tt-dataset-products a .image {
     float: left;
 }
