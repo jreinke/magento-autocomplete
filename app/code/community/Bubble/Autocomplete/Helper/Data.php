@@ -4,8 +4,8 @@
  *
  * @category    Bubble
  * @package     Bubble_Autocomplete
- * @version     1.1.1
- * @copyright   Copyright (c) 2014 BubbleShop (https://www.bubbleshop.net)
+ * @version     1.1.2
+ * @copyright   Copyright (c) 2015 BubbleShop (https://www.bubbleshop.net)
  */
 class Bubble_Autocomplete_Helper_Data extends Mage_Core_Helper_Abstract
 {
