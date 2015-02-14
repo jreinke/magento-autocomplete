@@ -60,8 +60,8 @@ jQuery('#search').typeahead({
                '</div>',
         suggestion: function(product) {
             var img = imgPlaceholder;
-            if (product.image && product.image != 'no_selection') {
-                img = baseUrlMedia + product.image;
+            if (product.thumbnail && product.thumbnail != 'no_selection') {
+                img = baseUrlMedia + product.thumbnail;
             }
             return '<a href="' + baseUrl + product.url_path + '">' +
                         '<div class="image">' +
