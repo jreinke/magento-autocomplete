@@ -25,7 +25,7 @@ class Bubble_Autocomplete_ProductController extends Mage_Core_Controller_Front_A
         }
 
         $this->getResponse()
-            ->setHeader('Content-Type', 'application/json')
+            ->setHeader('Content-Type', 'application/json', true)
             ->setBody($data);
     }
 }
