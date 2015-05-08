@@ -1,0 +1,23 @@
+{
+    "name": "bubble/magento-autocomplete",
+    "description": "Bubbleshop Autocomplete",
+    "homepage": "https://github.com/jreinke/magento-autocomplete",
+    "type": "magento-module",
+    "authors": [
+        {
+            "name": "Johann Reinke",
+            "homepage": "https://github.com/jreinke"
+        },
+        {
+            "name": "Volker Thiel",
+            "homepage": "https://github.com/riker09"
+        },
+        {
+            "name": "Frederik Winkelsdorf",
+            "homepage": "https://github.com/winkelsdorf"
+        }
+    ],
+    "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
