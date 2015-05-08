@@ -32,13 +32,15 @@ var imgPlaceholder = '<?php echo Mage::getModel('catalog/product')->getSmallImag
 var engine = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    <?php if ($helper->getUseLocalStorage()): ?>
-    prefetch: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' },
-    <?php else: ?>
-    remote: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' },
-    <?php endif; ?>
     limit: <?php echo $helper->getLimit() ?>,
-    ttl: <?php echo $helper->getCacheLifetime() * 1000 ?> // milliseconds
+    <?php if ($helper->getUseLocalStorage()): ?>
+    prefetch: {
+        url: '<?php echo $this->getUrl('autocomplete/product/json') ?>',
+        ttl: <?php echo $helper->getCacheLifetime() * 1000 ?> // milliseconds
+    }
+    <?php else: ?>
+    remote: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' }
+    <?php endif; ?>
 });
 
 // kicks off the loading/processing of `local` and `prefetch`
