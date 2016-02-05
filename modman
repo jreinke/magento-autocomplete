@@ -1,0 +1,10 @@
+app/code/community/Bubble/Autocomplete app/code/community/Bubble/Autocomplete
+app/design/frontend/base/default/layout/bubble/autocomplete.xml app/design/frontend/base/default/layout/bubble/autocomplete.xml
+app/design/frontend/base/default/template/bubble/autocomplete app/design/frontend/base/default/template/bubble/autocomplete
+app/etc/modules/Bubble_Autocomplete.xml app/etc/modules/Bubble_Autocomplete.xml
+app/locale/de_DE/Bubble_Autocomplete.csv app/locale/de_DE/Bubble_Autocomplete.csv
+skin/frontend/base/default/css/bubble/autocomplete.css skin/frontend/base/default/css/bubble/autocomplete.css
+skin/frontend/base/default/js/autocomplete/jquery-1.10.2.min.js skin/frontend/base/default/js/autocomplete/jquery-1.10.2.min.js
+skin/frontend/base/default/js/autocomplete/noconflict.js skin/frontend/base/default/js/autocomplete/noconflict.js
+skin/frontend/base/default/js/autocomplete/typeahead.bundle.js skin/frontend/base/default/js/autocomplete/typeahead.bundle.js
+skin/frontend/rwd/default/css/bubble/autocomplete.css skin/frontend/rwd/default/css/bubble/autocomplete.css

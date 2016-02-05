@@ -4,7 +4,7 @@
  *
  * @category    Bubble
  * @package     Bubble_Autocomplete
- * @version     1.1.2
+ * @version     1.1.3
  * @copyright   Copyright (c) 2015 BubbleShop (https://www.bubbleshop.net)
  */
 class Bubble_Autocomplete_Model_Observer
@@ -25,7 +25,7 @@ class Bubble_Autocomplete_Model_Observer
         /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
         $collection = $observer->getEvent()->getCollection();
         $collection->addAttributeToFilter('name', array('notnull' => true))
-            ->addAttributeToFilter('image', array('notnull' => true))
+            ->addAttributeToFilter('thumbnail', array('notnull' => true))
             ->addAttributeToFilter('url_path', array('notnull' => true))
             ->addStoreFilter()
             ->addPriceData()

@@ -2,7 +2,7 @@
 /**
  * @category    Bubble
  * @package     Bubble_Autocomplete
- * @version     1.1.2
+ * @version     1.1.3
  * @copyright   Copyright (c) 2015 BubbleShop (https://www.bubbleshop.net)
  */
 class Bubble_Autocomplete_ProductController extends Mage_Core_Controller_Front_Action
@@ -25,7 +25,7 @@ class Bubble_Autocomplete_ProductController extends Mage_Core_Controller_Front_A
         }
 
         $this->getResponse()
-            ->setHeader('Content-Type', 'application/json')
+            ->setHeader('Content-Type', 'application/json', true)
             ->setBody($data);
     }
 }
