@@ -20,98 +20,126 @@ Ajax.Autocompleter.prototype.getUpdatedChoices = function() {
     return false;
 };
 
-jQuery('#search').removeClass('required-entry');
+        <?php if ($helper->getUseLocalStorage()): ?>
+        var productsJson = JSON.parse(sessionStorage.getItem('productsJson'));
+        if (!productsJson) {
+            var jqxhr = jQuery.getJSON('<?php echo $this->getUrl('autocomplete/product/json', array('_secure' => true)) ?>', function (data) {
+                productsJson = sessionStorage.setItem('productsJson', JSON.stringify(data));
+            });
 
-// init some useful variables
-var priceFormat = <?php echo $this->helper('core')->jsonEncode($helper->getJsPriceFormat()) ?>;
-var baseUrl = '<?php echo $helper->getBaseUrl() ?>';
-var baseUrlMedia = '<?php echo $helper->getBaseUrlMedia() ?>';
-var imgPlaceholder = '<?php echo Mage::getModel('catalog/product')->getSmallImageUrl(100, 100); ?>';
+            jqxhr.done(function (data) {
+                initSearch(data);
+            });
+        } else {
+            initSearch(productsJson);
+        }
+        <?php else: ?>
+        initSearch(null);
+        <?php endif; ?>
 
-// constructs the suggestion engine
-var engine = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    <?php if ($helper->getUseLocalStorage()): ?>
-    prefetch: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' },
-    <?php else: ?>
-    remote: { url: '<?php echo $this->getUrl('autocomplete/product/json') ?>' },
-    <?php endif; ?>
-    limit: <?php echo $helper->getLimit() ?>,
-    ttl: <?php echo $helper->getCacheLifetime() * 1000 ?> // milliseconds
-});
+        function initSearch(productsJson) {
+            var searchField = jQuery('#search');
+            searchField.removeClass('required-entry');
 
-// kicks off the loading/processing of `local` and `prefetch`
-engine.initialize();
+            // init some useful variables
+            var priceFormat = <?php echo $this->helper('core')->jsonEncode($helper->getJsPriceFormat()) ?>;
+            var baseUrl = '<?php echo $helper->getBaseUrl() ?>';
+            var baseUrlMedia = '<?php echo $helper->getBaseUrlMedia() ?>';
+            var imgPlaceholder = '<?php echo Mage::getModel('catalog/product')->getSmallImageUrl(100, 100); ?>';
 
-jQuery('#search').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: <?php echo $helper->getMinLength() ?>
-}, {
-    name: 'products',
-    displayKey: 'name',
-    // `ttAdapter` wraps the suggestion engine in an adapter that
-    // is compatible with the typeahead jQuery plugin
-    source: engine.ttAdapter(),
-    templates: {
-        empty: '<div class="empty">' +
-                   '<?php echo $this->__('No Result') ?>' +
-               '</div>',
-        suggestion: function(product) {
-            var img = imgPlaceholder;
-            if (product.image && product.image != 'no_selection') {
-                img = baseUrlMedia + product.image;
+            // constructs the suggestion engine
+            var engine;
+            if (!productsJson) {
+                engine = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    remote: {url: '<?php echo $this->getUrl('autocomplete/product/json') ?>'},
+                    limit: <?php echo $helper->getLimit() ?>,
+                    ttl: <?php echo $helper->getCacheLifetime() * 1000 ?> // milliseconds
+                });
+            } else {
+                engine = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    local: productsJson,
+                    limit: <?php echo $helper->getLimit() ?>,
+                    ttl: <?php echo $helper->getCacheLifetime() * 1000 ?> // milliseconds
+                });
             }
-            return '<a href="' + baseUrl + product.url_path + '">' +
-                        '<div class="image">' +
+
+            // kicks off the loading/processing of `local` and `prefetch`
+            engine.initialize();
+
+            searchField.typeahead({
+                hint: true,
+                highlight: true,
+                minLength: <?php echo $helper->getMinLength() ?>
+            }, {
+                name: 'products',
+                displayKey: 'name',
+                // `ttAdapter` wraps the suggestion engine in an adapter that
+                // is compatible with the typeahead jQuery plugin
+                source: engine.ttAdapter(),
+                templates: {
+                    empty: '<div class="empty">' +
+                    '<?php echo $this->__('No Result') ?>' +
+                    '</div>',
+                    suggestion: function (product) {
+                        var img = imgPlaceholder;
+                        if (product.image && product.image !== 'no_selection') {
+                            img = baseUrlMedia + product.image;
+                        }
+                        return '<a href="' + baseUrl + product.url_path + '">' +
+                            '<div class="image">' +
                             '<img src="' + img + '">' +
-                        '</div>' +
-                        '<div class="info">' +
+                            '</div>' +
+                            '<div class="info">' +
                             '<span class="name">' + product.name + '</span>' +
                             '<div class="price-box">' + formatSuggestionPrice(product, priceFormat) + '</div>' +
-                        '</div>' +
-                        '<div class="clearer"><!-- --></div>' +
-                    '</a>';
-        }
-    }
-});
+                            '</div>' +
+                            '<div class="clearer"><!-- --></div>' +
+                            '</a>';
+                    }
+                }
+            });
 
-jQuery('#search').bind('typeahead:selected', function(obj, product, name) {
-    window.location.href = baseUrl + product.url_path;
-});
+            searchField.bind('typeahead:selected', function (obj, product, name) {
+                window.location.href = baseUrl + product.url_path;
+            });
 
-function formatSuggestionPrice(product, priceFormat) {
-    var price = '';
-    switch (product.type_id) {
-        case 'grouped':
-        case 'configurable':
-        case 'bundle':
-            price = '<p class="minimal-price">' +
-                        '<span class="price-label"><?php echo $this->__('Starting at:') ?>&nbsp;</span>' +
-                        '<span class="price">' + formatCurrency(product.min_price, priceFormat, false) + '</span>' +
-                    '</p>';
-            break;
-        default:
-            if (parseFloat(product.final_price) < parseFloat(product.price)) {
-                price += '<p class="old-price">' +
-                             '<span class="price-label"><?php echo $this->__('Regular Price:') ?>&nbsp;</span>' +
-                             '<span class="price">' + formatCurrency(product.price, priceFormat, false) + '</span>' +
-                         '</p>' +
-                         '<p class="special-price">' +
-                             '<span class="price">' +
-                                 formatCurrency(product.price, priceFormat, false) +
-                             '</span>' +
-                         '</p>';
-            } else {
-                price += '<span class="price">' +
-                             formatCurrency(product.price, priceFormat, false) +
-                         '</span>';
+            function formatSuggestionPrice(product, priceFormat) {
+                var price = '';
+                switch (product.type_id) {
+                    case 'grouped':
+                    case 'configurable':
+                    case 'bundle':
+                        price = '<p class="minimal-price">' +
+                            '<span class="price-label"><?php echo $this->__('Starting at:') ?>&nbsp;</span>' +
+                            '<span class="price">' + formatCurrency(product.min_price, priceFormat, false) + '</span>' +
+                            '</p>';
+                        break;
+                    default:
+                        if (parseFloat(product.final_price) < parseFloat(product.price)) {
+                            price += '<p class="old-price">' +
+                                '<span class="price-label"><?php echo $this->__('Regular Price:') ?>&nbsp;</span>' +
+                                '<span class="price">' + formatCurrency(product.price, priceFormat, false) + '</span>' +
+                                '</p>' +
+                                '<p class="special-price">' +
+                                '<span class="price">' +
+                                formatCurrency(product.price, priceFormat, false) +
+                                '</span>' +
+                                '</p>';
+                        } else {
+                            price += '<span class="price">' +
+                                formatCurrency(product.price, priceFormat, false) +
+                                '</span>';
+                        }
+                }
+
+                return price;
             }
-    }
+        }
 
-    return price;
-}
-//]]>
-</script>
+        //]]>
+    </script>
 <?php endif; ?>
